@@ -1,0 +1,17 @@
+.container {
+  width: 900px;
+  margin: 0 auto;
+}
+
+
+.withdraws {
+  color: #f01e1e;
+  font-size: 30px;
+  width: 100%;
+}
+
+.balance {
+  color: #2bb095;
+  font-size: 50px;
+  width: 100%;
+}
