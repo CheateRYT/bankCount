@@ -3,7 +3,6 @@
   margin: 0 auto;
 }
 
-
 .withdraws {
   color: #abf205;
   font-size: 30px;
@@ -57,4 +56,9 @@
   border-radius: 5px;
   font-size: 18px;
   cursor: pointer;
+}
+
+.balanceBan {
+  color: #f205e2;
+  font-size: 18px;
 }
