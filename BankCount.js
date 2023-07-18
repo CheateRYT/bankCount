@@ -21,29 +21,26 @@ const bankCount = {
       if (money > this.money) {
         console.log("Недостаточно средств!");
         alert("У вас на счету недостаточно средств!");
+      } else if (money > this.limit) { // проверка на превышение лимита перед выводом
+        console.log("Вы превысили лимит вывода!");
+        alert("Вы превысили лимит вывода!");
+        balanceBanBlock.innerHTML = 'У вас временная блокировка!'
+        this.block = true; 
+        setTimeout( 
+          function () { 
+            balanceBanBlock.innerHTML = ""; 
+            console.log("Ваш счет разблокирован!"); 
+            alert("Ваш счет разблокирован !"); 
+            this.block = false; 
+          }.bind(this), 
+          5000 
+        ); 
       } else {
         this.money -= money;
         console.log(`Поздравляю, вы успешно вывели ${money} рублей!`);
         this.withdraws.push(money);
         checkWithdraw();
         checkBalance();
-        if (money >= this.limit) {
-          balanceBanBlock.innerHTML = "У вас временная блокировка счета";
-          console.log(
-            "Вы превысили лимит вывода. Ваш счет временно заблокирован"
-          );
-          alert("Вы превысили лимит вывода. Ваш счет временно заблокирован!");
-          this.block = true;
-          setTimeout(
-            function () {
-              balanceBanBlock.innerHTML = "";
-              console.log("Ваш счет разблокирован!");
-              alert("Ваш счет разблокирован !");
-              this.block = false;
-            }.bind(this),
-            5000
-          );
-        }
       }
     }
   },
@@ -56,8 +53,10 @@ const bankCount = {
 
 const withdrawBlock = document.querySelector(".withdraws"),
   balanceBlock = document.querySelector(".balance"),
-  balanceBanBlock = document.querySelector(".balanceBan");
-  
+  balanceBanBlock = document.querySelector(".balanceBan"),
+  limitButton = document.querySelector(".limitButton"),
+  limitInput = document.querySelector(".limitInput");
+
 function checkBalance() {
   if (bankCount.money > 0) {
     balanceBlock.innerHTML = `Ваш баланс: ${bankCount.money}`;
@@ -109,7 +108,18 @@ withdrawButton.addEventListener("click", () => {
     withdrawInput.value = "";
   }
 });
-
+limitButton.addEventListener("click", () => {
+  if (
+    limitInput.value &&
+    limitInput.value.length > 0 &&
+    !isNaN(limitInput.value)
+  ) {
+    bankCount.limit = limitInput.value;
+    limitInput.value = "";
+  } else {
+    limitInput.value = "";
+  }
+});
 
 
 checkWithdraw();
