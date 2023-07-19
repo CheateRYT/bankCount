@@ -10,7 +10,7 @@ const bankCount = {
     } else {
       console.log(`Вы пополнили ваш счет на ${money} `);
       this.money += money;
-      checkBalance();
+      this.checkBalance();
     }
   },
   withdraw: function (money) {
@@ -39,16 +39,31 @@ const bankCount = {
         this.money -= money;
         console.log(`Поздравляю, вы успешно вывели ${money} рублей!`);
         this.withdraws.push(money);
-        checkWithdraw();
-        checkBalance();
+        this.checkWithdraw();
+        this.checkBalance();
       }
     }
   },
   check: function () {
     console.log(`У вас на счету ${this.money}`);
-    checkBalance();
+    this.checkBalance();
   },
+  checkBalance: function () {
+    if (this.money > 0) {
+      balanceBlock.innerHTML = `Ваш баланс: ${this.money}`;
+    } else {
+      balanceBlock.innerHTML = "На счету нету средств !";
+    }
+  },
+  checkWithdraw: function () {
+    if (this.withdraws.length > 0) {
+      withdrawBlock.innerHTML = `Выводы на нашем проекте: ${this.withdraws}`;
+    } else {
+      withdrawBlock.innerHTML = "Выводы на нашем проекте: нет данных";
+    }
+  }
 };
+
 //Withdraws and Balance Block
 
 const withdrawBlock = document.querySelector(".withdraws"),
@@ -57,21 +72,6 @@ const withdrawBlock = document.querySelector(".withdraws"),
   limitButton = document.querySelector(".limitButton"),
   limitInput = document.querySelector(".limitInput");
 
-function checkBalance() {
-  if (bankCount.money > 0) {
-    balanceBlock.innerHTML = `Ваш баланс: ${bankCount.money}`;
-  } else {
-    balanceBlock.innerHTML = "На счету нету средств !";
-  }
-}
-
-function checkWithdraw() {
-  if (bankCount.withdraws.length > 0) {
-    withdrawBlock.innerHTML = `Выводы на нашем проекте: ${bankCount.withdraws}`;
-  } else {
-    withdrawBlock.innerHTML = "Выводы на нашем проекте: нет данных";
-  }
-}
 
 // FillBalance
 
@@ -121,6 +121,5 @@ limitButton.addEventListener("click", () => {
   }
 });
 
-
-checkWithdraw();
-checkBalance();
+bankCount.checkWithdraw();
+bankCount.checkBalance();
