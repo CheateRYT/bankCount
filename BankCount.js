@@ -1,39 +1,45 @@
 const bankCount = {
-  money: 0,
   limit: 100000,
-  block: false,
-  userName: "",
-  withdraws: [],
   fill: function (money) {
     if (this.block === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
+      checkBalanceByLogin()
     } else {
       console.log(`Вы пополнили ваш счет на ${money} `);
       this.money += money;
       this.checkBalance();
+      let username = loginInputLogin.value;
+      bankCount[username].money = this.money;
+      checkBalanceByLogin()
     }
   },
   withdraw: function (money) {
+    let username = loginInputLogin.value;
+    bankCount[username].money = this.money;
     if (this.block === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
+      checkBalanceByLogin()
     } else {
       if (money > this.money) {
         console.log("Недостаточно средств!");
         alert("У вас на счету недостаточно средств!");
+        checkBalanceByLogin()
       } else if (money > this.limit) {
         // проверка на превышение лимита перед выводом
         console.log("Вы превысили лимит вывода!");
         alert("Вы превысили лимит вывода!");
         balanceBanBlock.innerHTML = "У вас временная блокировка!";
         this.block = true;
+        checkBalanceByLogin()
         setTimeout(
           function () {
             balanceBanBlock.innerHTML = "";
             console.log("Ваш счет разблокирован!");
             alert("Ваш счет разблокирован !");
             this.block = false;
+            checkBalanceByLogin()
           }.bind(this),
           5000
         );
@@ -43,20 +49,25 @@ const bankCount = {
         this.withdraws.push(money);
         this.checkWithdraw();
         this.checkBalance();
+        checkBalanceByLogin()
       }
     }
   },
   checkBalance: function () {
     if (this.money > 0) {
+      checkBalanceByLogin()
       balanceBlock.innerHTML = `Ваш баланс: ${this.money}`;
     } else {
+      checkBalanceByLogin()
       balanceBlock.innerHTML = "На счету нету средств !";
     }
   },
   checkWithdraw: function () {
     if (this.withdraws.length > 0) {
+      checkBalanceByLogin()
       withdrawCountBlock.innerHTML = `Выводы на нашем проекте: ${this.withdraws}`;
     } else {
+      checkBalanceByLogin()
       withdrawCountBlock.innerHTML = "Выводы на нашем проекте: нет данных";
     }
   },
@@ -74,12 +85,18 @@ const withdrawCountBlock = document.querySelector(".withdrawsCount"),
   withdrawInput = document.querySelector(".withdrawInput"),
   withdrawButton = document.querySelector(".withdrawButton"),
   loginButton = document.querySelector(".login-button"),
-  loginInput = document.querySelector(".login-input"),
+  loginInputLogin = document.querySelector(".login-input-login"),
+  loginInputPass = document.querySelector(".login-input-pass"),
+  registerForm = document.querySelector('.register-form'),
+  registerInputLogin = document.querySelector(".register-input-login"),
+  registerInputPass = document.querySelector(".register-input-pass"),
+  registerButton = document.querySelector('.register-button'),
   loginForm = document.querySelector(".login-form"),
   fillBalanceBlock = document.querySelector(".fillBalance"),
   withdrawMoneyBlock = document.querySelector(".withdrawMoney"),
   limitChangerBlock = document.querySelector(".limitChanger"),
   leaveBtn = document.querySelector('.leave');
+  
 
 let loginInfoText = document.createElement("div");
 
@@ -103,45 +120,61 @@ function enterInput(input, method) {
   }
 }
 
-function enterLoginInput(input, method) {
-  if (input.value && input.value.length < 56) {
-    method();
-    alert("Вход успешно выполнен!");
-    input.value = "";
-  } else {
-    alert("Введены неверные данные!");
-    input.value = "";
+function enterLoginInput(loginInput,registerInput ,method) {
+  if (loginInput.value && loginInput.value.length < 56) {
+    let username = loginInput.value;
+    let password = registerInput.value;
+    if (bankCount[username] && bankCount[username].password === password) {
+      method();
+      bankCount.money = bankCount[username].money;
+      bankCount.blocks = bankCount[username].blocks;
+      bankCount.withdraws = bankCount[username].withdraws;
+    } else {
+      
+      alert("Неверное имя пользователя или пароль");
+    }
   }
-}
-
-
+  }
 
 //Login Form
 
 function loginAdd () {
-  enterLoginInput(loginInput, function () {
-    bankCount.userName = loginInput.value;
+  enterLoginInput(loginInputLogin, loginInputPass, function () {
     loginForm.classList.remove("login-form");
     loginForm.classList.add('hide');
+    registerForm.classList.add('hide')
     loginInfoText.classList.add("loginInfoText", 'hide');
-    loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInput.value}</div>`;
+    loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInputLogin.value}</div>`;
     document.body.insertBefore(loginInfoText, document.body.firstChild);
     bankInterface.forEach((item) => {
       item.classList.remove("hide");
     });
     leaveBtn.classList.remove('hide')
+    let username = loginInputLogin.value;
+    bankCount.money = bankCount[username].money;
   });
 }
 
 loginButton.addEventListener("click", function () {
   loginAdd();
+  checkBalanceByLogin()
 });
 
-loginInput.addEventListener("keydown", function (e) {
-  if (e.keyCode === 13) {//Enter
-    loginAdd();
-  }
-});
+
+
+//Register 
+registerButton.addEventListener('click', ()=> {
+  let username = registerInputLogin.value;
+  let password = registerInputPass.value;
+
+    if (bankCount[username]) {
+      alert("Пользователь с таким именем уже существует");
+    } else {
+      bankCount[username] = { password: password, money: 0, withdraws: [ ], blocks: false};
+      alert("Регистрация выполнена успешно!");
+    }
+})
+
 
 //Leave
 
@@ -153,7 +186,9 @@ leaveBtn.addEventListener('click', () => {
   leaveBtn.classList.add('hide')
   loginForm.classList.remove('hide')
   loginForm.classList.add('login-form')
-  
+  registerForm.classList.remove('hide')
+  registerForm.classList.add('register-form')
+  alert("Вы успешно вышли с учетной записи!")
 })
 
 //Fill money
@@ -207,5 +242,10 @@ limitInput.addEventListener("keydown", function (e) {
   }
 });
 
-bankCount.checkWithdraw();
-bankCount.checkBalance();
+setInterval(function() {
+  bankCount.checkWithdraw();
+}, 1);
+
+setInterval(function() {
+  bankCount.checkBalance();
+}, 1);

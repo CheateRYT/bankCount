@@ -18,11 +18,11 @@
 
 .login-form {
 
-  margin-top: 300px;
-  margin-left: 300px;
+  
+  margin-left: 150px;
   margin-bottom: 100px;
 }
-.login-input {
+.inputs {
   margin-right: 10px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -30,7 +30,7 @@
   font-size: 16px;
   color: #333;
 }
-.login-button {
+.btns {
   padding: 10px 20px;
   background-color: #020000;
   color: #fff;
@@ -140,4 +140,17 @@
   cursor: pointer;
   width: 100%;
 
+}
+
+.register-form {
+  margin-top: 300px;
+  margin-bottom: 20px;
+  margin-left: 30px;
+}
+.register-input-login {
+
+}
+.register-input-pass {
+}
+.register-button {
 }
