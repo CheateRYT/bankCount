@@ -95,6 +95,7 @@ function enterInput(input, method) {
     input.value = "";
   } else {
     input.value = "";
+    alert("Введены неверные данные!");
   }
 }
 
@@ -104,7 +105,7 @@ function enterLoginInput(input, method) {
     alert("Вход успешно выполнен!");
     input.value = "";
   } else {
-    alert("Введите правильные данные!");
+    alert("Введены неверные данные!");
     input.value = "";
   }
 }
