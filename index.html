@@ -9,16 +9,23 @@
   </head>
   <body>
     <div class="container">
-      <div class="balance"></div>
-      <div class="withdraws"></div>
-      <div class="fillBalance">
+      <div class="login-form">
+        <input placeholder="Ваш логин" class="login-input" type="text" /><button
+          class="login-button"
+        >
+          Войти
+        </button>
+      </div>
+      <div class="balance hide"></div>
+      <div class="withdrawsCount hide"></div>
+      <div class="fillBalance hide">
         <input
           class="fillInput"
           placeholder="Сумма для пополнения"
           type="text"
         /><button class="fillButton">Пополнить</button>
       </div>
-      <div class="withdrawMoney">
+      <div class="withdrawMoney hide">
         <input
           class="withdrawInput"
           placeholder="Сумма для выплаты"
@@ -26,11 +33,13 @@
         /><button class="withdrawButton">Снять</button>
       </div>
       <div class="balanceBan"></div>
-      <div class="limitChanger"><input
-        class="limitInput"
-        placeholder="Лимит для вывода"
-        type="text"
-      /><button class="limitButton">Изменить</button></div>
+      <div class="limitChanger hide">
+        <input
+          class="limitInput"
+          placeholder="Лимит для вывода"
+          type="text"
+        /><button class="limitButton">Изменить</button>
+      </div>
     </div>
     <script src="BankCount.js"></script>
   </body>
