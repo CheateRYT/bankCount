@@ -4,14 +4,14 @@ const bankCount = {
     if (this.block === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
-      checkBalanceByLogin()
+      
     } else {
       console.log(`Вы пополнили ваш счет на ${money} `);
       this.money += money;
       this.checkBalance();
       let username = loginInputLogin.value;
       bankCount[username].money = this.money;
-      checkBalanceByLogin()
+      
     }
   },
   withdraw: function (money) {
@@ -20,26 +20,26 @@ const bankCount = {
     if (this.block === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
-      checkBalanceByLogin()
+      
     } else {
       if (money > this.money) {
         console.log("Недостаточно средств!");
         alert("У вас на счету недостаточно средств!");
-        checkBalanceByLogin()
+        
       } else if (money > this.limit) {
         // проверка на превышение лимита перед выводом
         console.log("Вы превысили лимит вывода!");
         alert("Вы превысили лимит вывода!");
         balanceBanBlock.innerHTML = "У вас временная блокировка!";
         this.block = true;
-        checkBalanceByLogin()
+        
         setTimeout(
           function () {
             balanceBanBlock.innerHTML = "";
             console.log("Ваш счет разблокирован!");
             alert("Ваш счет разблокирован !");
             this.block = false;
-            checkBalanceByLogin()
+            
           }.bind(this),
           5000
         );
@@ -49,25 +49,22 @@ const bankCount = {
         this.withdraws.push(money);
         this.checkWithdraw();
         this.checkBalance();
-        checkBalanceByLogin()
+        
       }
     }
   },
   checkBalance: function () {
     if (this.money > 0) {
-      checkBalanceByLogin()
       balanceBlock.innerHTML = `Ваш баланс: ${this.money}`;
     } else {
-      checkBalanceByLogin()
       balanceBlock.innerHTML = "На счету нету средств !";
     }
   },
   checkWithdraw: function () {
     if (this.withdraws.length > 0) {
-      checkBalanceByLogin()
       withdrawCountBlock.innerHTML = `Выводы на нашем проекте: ${this.withdraws}`;
     } else {
-      checkBalanceByLogin()
+
       withdrawCountBlock.innerHTML = "Выводы на нашем проекте: нет данных";
     }
   },
@@ -157,7 +154,6 @@ function loginAdd () {
 
 loginButton.addEventListener("click", function () {
   loginAdd();
-  checkBalanceByLogin()
 });
 
 
