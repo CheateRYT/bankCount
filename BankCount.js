@@ -111,7 +111,7 @@ function enterLoginInput(input, method) {
 
 //Login Form
 
-loginButton.addEventListener("click", function () {
+function loginAdd () {
   enterLoginInput(loginInput, function () {
     bankCount.userName = loginInput.value;
     loginForm.classList.remove("login-form");
@@ -124,23 +124,15 @@ loginButton.addEventListener("click", function () {
       item.classList.remove("hide");
     });
   });
+}
+
+loginButton.addEventListener("click", function () {
+  loginAdd();
 });
 
 loginInput.addEventListener("keydown", function (e) {
-  if (e.keyCode === 13) {
-    //Enter
-    enterLoginInput(loginInput, function () {
-      bankCount.userName = loginInput.value;
-      loginForm.classList.remove("login-form");
-      loginForm.innerHTML = "";
-      let loginInfoText = document.createElement("div");
-      loginInfoText.classList.add("loginInfoText");
-      loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInput.value}</div>`;
-      document.body.insertBefore(loginInfoText, document.body.firstChild);
-      bankInterface.forEach((item) => {
-        item.classList.remove("hide");
-      });
-    });
+  if (e.keyCode === 13) {//Enter
+    loginAdd();
   }
 });
 
