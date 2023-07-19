@@ -1,10 +1,13 @@
+* {
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
 .container {
   width: 900px;
   margin: 0 auto;
-  padding: 10px;
 }
 
-.hide {
+.hide { 
   display: none;
 }
 
@@ -20,6 +23,7 @@
   margin-bottom: 100px;
 }
 .login-input {
+  margin-right: 10px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -40,7 +44,6 @@
   color: #88e8f0;
   font-size: 40px;
   width: 100%;
-  margin-bottom: 10px;
 }
 
 .withdrawsCount {
@@ -51,6 +54,8 @@
 }
 
 .balance {
+  padding: 0;
+  margin: 0;
   color: #2bb095;
   font-size: 50px;
   width: 100%;
@@ -62,6 +67,7 @@
 }
 
 .fillInput {
+  margin-right: 10px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -82,6 +88,7 @@
   margin-bottom: 30px;
 }
 .withdrawInput {
+  margin-right: 10px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -106,6 +113,7 @@
 .limitChanger {
 }
 .limitInput {
+  margin-right: 10px;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
