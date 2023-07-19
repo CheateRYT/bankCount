@@ -160,15 +160,17 @@ loginButton.addEventListener("click", function () {
 
 //Register 
 registerButton.addEventListener('click', ()=> {
-  let username = registerInputLogin.value;
-  let password = registerInputPass.value;
-
-    if (bankCount[username]) {
-      alert("Пользователь с таким именем уже существует");
-    } else {
-      bankCount[username] = { password: password, money: 0, withdraws: [ ], blocks: false};
-      alert("Регистрация выполнена успешно!");
-    }
+  if (registerInputLogin.value != 0 && registerInputPass.value != 0) {
+    let username = registerInputLogin.value;
+    let password = registerInputPass.value;
+  
+      if (bankCount[username]) {
+        alert("Пользователь с таким именем уже существует");
+      } else {
+        bankCount[username] = { password: password, money: 0, withdraws: [ ], blocks: false};
+        alert("Регистрация выполнена успешно!");
+      }
+  }
 })
 
 
