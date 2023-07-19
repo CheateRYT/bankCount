@@ -78,10 +78,14 @@ const withdrawCountBlock = document.querySelector(".withdrawsCount"),
   loginForm = document.querySelector(".login-form"),
   fillBalanceBlock = document.querySelector(".fillBalance"),
   withdrawMoneyBlock = document.querySelector(".withdrawMoney"),
-  limitChangerBlock = document.querySelector(".limitChanger");
+  limitChangerBlock = document.querySelector(".limitChanger"),
+  leaveBtn = document.querySelector('.leave');
+
+let loginInfoText = document.createElement("div");
 
 let bankInterface = [
   balanceBlock,
+  loginInfoText,
   withdrawCountBlock,
   fillBalanceBlock,
   withdrawMoneyBlock,
@@ -110,20 +114,22 @@ function enterLoginInput(input, method) {
   }
 }
 
+
+
 //Login Form
 
 function loginAdd () {
   enterLoginInput(loginInput, function () {
     bankCount.userName = loginInput.value;
     loginForm.classList.remove("login-form");
-    loginForm.innerHTML = "";
-    let loginInfoText = document.createElement("div");
-    loginInfoText.classList.add("loginInfoText");
+    loginForm.classList.add('hide');
+    loginInfoText.classList.add("loginInfoText", 'hide');
     loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInput.value}</div>`;
     document.body.insertBefore(loginInfoText, document.body.firstChild);
     bankInterface.forEach((item) => {
       item.classList.remove("hide");
     });
+    leaveBtn.classList.remove('hide')
   });
 }
 
@@ -137,7 +143,18 @@ loginInput.addEventListener("keydown", function (e) {
   }
 });
 
-//Login Info text
+//Leave
+
+
+leaveBtn.addEventListener('click', () => {
+  bankInterface.forEach((item) => {
+    item.classList.add("hide");
+  });
+  leaveBtn.classList.add('hide')
+  loginForm.classList.remove('hide')
+  loginForm.classList.add('login-form')
+  
+})
 
 //Fill money
 
