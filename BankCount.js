@@ -44,10 +44,6 @@ const bankCount = {
       }
     }
   },
-  check: function () {
-    console.log(`У вас на счету ${this.money}`);
-    this.checkBalance();
-  },
   checkBalance: function () {
     if (this.money > 0) {
       balanceBlock.innerHTML = `Ваш баланс: ${this.money}`;
