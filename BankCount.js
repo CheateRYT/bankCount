@@ -70,56 +70,74 @@ const withdrawBlock = document.querySelector(".withdraws"),
   balanceBlock = document.querySelector(".balance"),
   balanceBanBlock = document.querySelector(".balanceBan"),
   limitButton = document.querySelector(".limitButton"),
-  limitInput = document.querySelector(".limitInput");
+  limitInput = document.querySelector(".limitInput"),
+  fillButton = document.querySelector(".fillButton"),
+  fillInput = document.querySelector(".fillInput"),
+  withdrawInput = document.querySelector(".withdrawInput"),
+  withdrawButton = document.querySelector(".withdrawButton");
 
 
-// FillBalance
-
-const fillButton = document.querySelector(".fillButton"),
-  fillInput = document.querySelector(".fillInput");
-
-fillButton.addEventListener("click", () => {
-  if (
-    fillInput.value &&
-    fillInput.value.length > 0 &&
-    !isNaN(fillInput.value)
-  ) {
-    bankCount.fill(parseInt(fillInput.value));
-    fillInput.value = "";
-  } else {
-    fillInput.value = "";
+  //Enter Input system
+  function enterInput (input,method) {
+    if (
+      input.value &&
+      input.value.length > 0 &&
+      !isNaN(input.value)
+    ) {
+      method();
+      input.value = "";
+    } else {
+      input.value = "";
+    }
   }
-});
+
+//Fill money
+
+  fillButton.addEventListener("click", function() {
+    enterInput(fillInput, function() {
+      bankCount.fill(parseInt(fillInput.value));
+    });
+  });
+
+  fillInput.addEventListener("keydown", function(e) {
+    if (e.keyCode === 13) {//Enter
+      enterInput(fillInput, function() {
+        bankCount.fill(parseInt(fillInput.value));
+      });
+    }
+  });
 
 //Withdraw money
 
-const withdrawInput = document.querySelector(".withdrawInput"),
-  withdrawButton = document.querySelector(".withdrawButton");
+  withdrawButton.addEventListener("click", function() {
+    enterInput(withdrawInput, function() {
+      bankCount.withdraw(parseInt(withdrawInput.value));
+    });
+  });
 
-withdrawButton.addEventListener("click", () => {
-  if (
-    withdrawInput.value &&
-    withdrawInput.value.length > 0 &&
-    !isNaN(withdrawInput.value)
-  ) {
-    bankCount.withdraw(parseInt(withdrawInput.value));
-    withdrawInput.value = "";
-  } else {
-    withdrawInput.value = "";
-  }
-});
-limitButton.addEventListener("click", () => {
-  if (
-    limitInput.value &&
-    limitInput.value.length > 0 &&
-    !isNaN(limitInput.value)
-  ) {
-    bankCount.limit = limitInput.value;
-    limitInput.value = "";
-  } else {
-    limitInput.value = "";
-  }
-});
+  withdrawInput.addEventListener("keydown", function(e) {
+    if (e.keyCode === 13) {//Enter
+      enterInput(withdrawInput, function() {
+        bankCount.withdraw(parseInt(withdrawInput.value));
+      });
+    }
+  });
+
+  //Limit Input 
+
+  limitButton.addEventListener("click", function() {
+    enterInput(limitInput, function() {
+      bankCount.limit = limitInput.value;
+    });
+  });
+
+  limitInput.addEventListener("keydown", function(e) {
+    if (e.keyCode === 13) {//Enter
+      enterInput(limitInput, function() {
+        bankCount.limit = limitInput.value;
+      });
+    }
+  });
 
 bankCount.checkWithdraw();
 bankCount.checkBalance();
