@@ -1,9 +1,9 @@
 
 let bankCount = {
-  leavePressed : false,
-  users : {},
+  leavePressed: false,
+  users: {},
   fill: function (money) {
-    if (this.block === true) {
+    if (this.blocks === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
     } else {
@@ -17,31 +17,61 @@ let bankCount = {
   withdraw: function (money) {
     let username = loginInputLogin.value;
     bankCount.users[username].money = this.money;
-    if (this.block === true) {
+    this.blocks = bankCount.users[username].blocks;
+    bankCount.users[username].blocks = this.blocks;
+    if (this.blocks === true) {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
     } else {
-      if (money > this.money) {
-        console.log("Недостаточно средств!");
-        alert("У вас на счету недостаточно средств!");
-      } else if (money > this.limit && bankCount.users[username].isAdmin != true) {
-        // проверка на превышение лимита перед выводом
-        console.log("Вы превысили лимит вывода!");
-        alert("Вы превысили лимит вывода!");
-        balanceBanBlock.innerHTML = "У вас временная блокировка!";
-        this.block = true;
+      if (money > this.money) { 
+        console.log("Недостаточно средств!"); 
+        alert("У вас на счету недостаточно средств!"); 
+      } else if ( 
+        money > this.limit && 
+        bankCount.users[username].isAdmin != true  
+      ) { 
+        let username = loginInputLogin.value;
+        let currentDate = new Date(); 
+        bankCount.users[username].unbanDate = new Date(currentDate.getTime() +  15000); 
+        // проверка на превышение лимита перед выводом 
+        if (currentDate >= bankCount.users[username].unbanDate) { 
+          console.log('Текущая дата равна дате разблокировки') 
+          this.block = false;
+          bankCount.users[username].blocks = false;
+          ocalStorage.setItem("bankCount", JSON.stringify(bankCount));
+        } 
+        this.unbanDate =  bankCount.users[username].unbanDate; 
+        this.blocks = true;
+        bankCount.users[username].blocks = true;
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+       
 
-        let banAcc =setTimeout(
-          function () {
-            balanceBanBlock.innerHTML = "";
-            console.log("Ваш счет разблокирован!");
-            this.leavePressed ? console.log (''):alert("Ваш счет разблокирован !");
-            this.block = false;
-          }.bind(this),
-          5000
-        );
+
+        if (bankCount.users[username].unbanDate >= currentDate) {
+          this.blocks = true;
+        bankCount.users[username].blocks = true;
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        console.log("Вы превысили лимит вывода!"); 
+        alert("Вы превысили лимит вывода!"); 
+        balanceBanBlock.innerHTML = "У вас временная блокировка!"; 
+        } else {
+          let currentDate = new Date()
+          this.blocks = false;
+          bankCount.users[username].blocks = false;
+          balanceBanBlock.innerHTML = "";
+          console.log("Ваш счет разблокирован!");
+          this.leavePressed
+            ? console.log("")
+            : alert("Ваш счет разблокирован !");
+            bankCount.users[username].unbanDate = '';
+            bankCount.blocks = bankCount.users[username].blocks;
+          localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        }
+
+        
       } else {
         this.money -= money;
+        bankCount.users[username].money = this.money;
         console.log(`Поздравляю, вы успешно вывели ${money} рублей!`);
         this.withdraws.push(money);
         localStorage.setItem("bankCount", JSON.stringify(bankCount));
@@ -64,12 +94,11 @@ let bankCount = {
     }
   },
 };
-let bankCountJSON = localStorage.getItem('bankCount');
-
+let bankCountJSON = localStorage.getItem("bankCount");
 // Проверка, есть ли сохраненное значение
-console.log(bankCount)
+console.log(bankCount);
 if (bankCountJSON) {
-  console.log(bankCount)
+  console.log(bankCount);
   // Преобразование значения из формата JSON обратно в объект или значение
   bankCount.users = JSON.parse(bankCountJSON).users;
   // Использование значения bankCount
@@ -100,7 +129,7 @@ const withdrawCountBlock = document.querySelector(".withdrawsCount"),
   withdrawMoneyBlock = document.querySelector(".withdrawMoney"),
   limitChangerBlock = document.querySelector(".limitChanger"),
   leaveBtn = document.querySelector(".leave"),
-  adminCheckbox = document.getElementById('myCheckbox');
+  adminCheckbox = document.getElementById("myCheckbox");
 let loginInfoText = document.createElement("div");
 
 let bankInterface = [
@@ -119,7 +148,8 @@ function enterInput(input, method) {
     method();
     input.value = "";
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
-  } else {s
+  } else {
+    s;
     input.value = "";
     alert("Введены неверные данные!");
   }
@@ -129,11 +159,15 @@ function enterLoginInput(loginInput, registerInput, method) {
   if (loginInput.value && loginInput.value.length < 56) {
     let username = loginInput.value;
     let password = registerInput.value;
-    if (bankCount.users[username] && bankCount.users[username].password === password) {
+    if (
+      bankCount.users[username] &&
+      bankCount.users[username].password === password
+    ) {
       bankCount.money = bankCount.users[username].money;
       bankCount.blocks = bankCount.users[username].blocks;
       bankCount.withdraws = bankCount.users[username].withdraws;
       bankCount.limit = bankCount.users[username].limit;
+      bankCount.unbanDate = bankCount.users[username].unbanDate;
       bankCount.isAdmin = bankCount.users[username].isAdmin;
       localStorage.setItem("bankCount", JSON.stringify(bankCount));
       method();
@@ -145,9 +179,29 @@ function enterLoginInput(loginInput, registerInput, method) {
 
 //Login Form
 
+function block() {
+  let username = loginInputLogin.value;
+  balanceBanBlock.innerHTML = "У вас временная блокировка!"; 
+  bankCount.blocks = true;
+  bankCount.users[username].blocks = true;
+  localStorage.setItem("bankCount", JSON.stringify(bankCount));
+}
 function loginAdd() {
   enterLoginInput(loginInputLogin, loginInputPass, function () {
     let username = loginInputLogin.value;
+    let currentDate = new Date();
+    if (bankCount.users[username].unbanDate && bankCount.users[username].unbanDate >= currentDate){
+      block();
+    } else {
+      bankCount.blocks = false;
+      bankCount.users[username].blocks = false;
+      localStorage.setItem("bankCount", JSON.stringify(bankCount));
+      balanceBanBlock.innerHTML = ""; 
+      bankCount.users[username].unbanDate = undefined;
+      bankCount.unbanDate = undefined;
+    }
+
+    localStorage.setItem("bankCount", JSON.stringify(bankCount));
     bankCount.money = bankCount.users[username].money;
     loginForm.classList.remove("login-form");
     loginForm.classList.add("hide");
@@ -158,7 +212,7 @@ function loginAdd() {
     document.body.insertBefore(loginInfoText, document.body.firstChild);
     if (bankCount.users[username].isAdmin == true) {
       bankInterface.forEach((item) => {
-        if (item != limitChangerBlock){
+        if (item != limitChangerBlock) {
           item.classList.remove("hide");
         }
       });
@@ -169,7 +223,21 @@ function loginAdd() {
     }
     leaveBtn.classList.remove("hide");
     bankCount.checkWithdraw();
-bankCount.checkBalance(); 
+    bankCount.checkBalance();
+    setInterval(() => {
+      let username = loginInputLogin.value;
+      let currentDate = new Date();
+      if (bankCount.users[username].unbanDate && bankCount.users[username].unbanDate >= currentDate){
+        block();
+      } else {
+        bankCount.blocks = false;
+        bankCount.users[username].blocks = false;
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        balanceBanBlock.innerHTML = ""; 
+        bankCount.users[username].unbanDate = undefined;
+        bankCount.unbanDate = undefined;
+      }
+    }, 5000)
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
   });
 }
@@ -185,7 +253,7 @@ registerButton.addEventListener("click", () => {
   if (registerInputLogin.value != 0 && registerInputPass.value != 0) {
     let username = registerInputLogin.value;
     let password = registerInputPass.value;
-    console.log(bankCount)
+    console.log(bankCount);
     if (bankCount.users[username]) {
       alert("Пользователь с таким именем уже существует");
       registerInputLogin.value = "";
@@ -198,12 +266,13 @@ registerButton.addEventListener("click", () => {
           withdraws: [],
           blocks: false,
           limit: 100000,
-          isAdmin: true
+          unbanDate: "",
+          isAdmin: true,
         };
-        console.log(bankCount)  
+        console.log(bankCount);
         localStorage.setItem("bankCount", JSON.stringify(bankCount));
         alert("Регистрация выполнена успешно!");
-  
+
         registerInputLogin.value = "";
         registerInputPass.value = "";
       } else {
@@ -215,10 +284,10 @@ registerButton.addEventListener("click", () => {
           limit: 100000,
           isAdmin: false,
         };
-        console.log(bankCount)  
+        console.log(bankCount);
         localStorage.setItem("bankCount", JSON.stringify(bankCount));
         alert("Регистрация выполнена успешно!");
-  
+
         registerInputLogin.value = "";
         registerInputPass.value = "";
       }
@@ -226,12 +295,9 @@ registerButton.addEventListener("click", () => {
   } else {
     registerInputLogin.value = "";
     registerInputPass.value = "";
-    adminCheckbox.checked= false;
+    adminCheckbox.checked = false;
   }
 });
-
-
-
 
 //Leave
 
@@ -246,6 +312,8 @@ leaveBtn.addEventListener("click", () => {
   registerForm.classList.add("register-form");
   bankCount.leavePressed = true;
   alert("Вы успешно вышли с учетной записи!");
+  bankCount.checkWithdraw();
+  bankCount.checkBalance();
   localStorage.setItem("bankCount", JSON.stringify(bankCount));
 });
 
@@ -255,7 +323,7 @@ fillButton.addEventListener("click", function () {
   enterInput(fillInput, function () {
     bankCount.fill(parseInt(fillInput.value));
     bankCount.checkWithdraw();
-  bankCount.checkBalance();
+    bankCount.checkBalance();
   });
 });
 
@@ -265,7 +333,7 @@ fillInput.addEventListener("keydown", function (e) {
     enterInput(fillInput, function () {
       bankCount.fill(parseInt(fillInput.value));
       bankCount.checkWithdraw();
-  bankCount.checkBalance();
+      bankCount.checkBalance();
     });
   }
 });
@@ -276,7 +344,7 @@ withdrawButton.addEventListener("click", function () {
   enterInput(withdrawInput, function () {
     bankCount.withdraw(parseInt(withdrawInput.value));
     bankCount.checkWithdraw();
-  bankCount.checkBalance();
+    bankCount.checkBalance();
   });
 });
 
@@ -285,7 +353,7 @@ withdrawInput.addEventListener("keydown", function (e) {
     //Enter
     enterInput(withdrawInput, function () {});
     bankCount.checkWithdraw();
-  bankCount.checkBalance();
+    bankCount.checkBalance();
   }
 });
 
@@ -295,7 +363,7 @@ limitButton.addEventListener("click", function () {
   enterInput(limitInput, function () {
     bankCount.limit = limitInput.value;
     bankCount.checkWithdraw();
-  bankCount.checkBalance();
+    bankCount.checkBalance();
   });
 });
 
@@ -305,9 +373,9 @@ limitInput.addEventListener("keydown", function (e) {
     enterInput(limitInput, function () {
       bankCount.limit = limitInput.value;
       bankCount.checkWithdraw();
-  bankCount.checkBalance();
+      bankCount.checkBalance();
     });
   }
 });
 bankCount.checkWithdraw();
-bankCount.checkBalance(); 
+bankCount.checkBalance();
