@@ -1,4 +1,3 @@
-
 let bankCount = {
   leavePressed: false,
   users: {},
@@ -23,39 +22,39 @@ let bankCount = {
       console.log("Ваш счет заблокирован!");
       alert("Ваш счет временно заблокирован!");
     } else {
-      if (money > this.money) { 
-        console.log("Недостаточно средств!"); 
-        alert("У вас на счету недостаточно средств!"); 
-      } else if ( 
-        money > this.limit && 
-        bankCount.users[username].isAdmin != true  
-      ) { 
+      if (money > this.money) {
+        console.log("Недостаточно средств!");
+        alert("У вас на счету недостаточно средств!");
+      } else if (
+        money > this.limit &&
+        bankCount.users[username].isAdmin != true
+      ) {
         let username = loginInputLogin.value;
-        let currentDate = new Date(); 
-        bankCount.users[username].unbanDate = new Date(currentDate.getTime() +  15000); 
-        // проверка на превышение лимита перед выводом 
-        if (currentDate >= bankCount.users[username].unbanDate) { 
-          console.log('Текущая дата равна дате разблокировки') 
+        let currentDate = new Date();
+        bankCount.users[username].unbanDate = new Date(
+          currentDate.getTime() + 15000
+        );
+        // проверка на превышение лимита перед выводом
+        if (currentDate >= bankCount.users[username].unbanDate) {
+          console.log("Текущая дата равна дате разблокировки");
           this.block = false;
           bankCount.users[username].blocks = false;
           localStorage.setItem("bankCount", JSON.stringify(bankCount));
-        } 
-        this.unbanDate =  bankCount.users[username].unbanDate; 
+        }
+        this.unbanDate = bankCount.users[username].unbanDate;
         this.blocks = true;
         bankCount.users[username].blocks = true;
         localStorage.setItem("bankCount", JSON.stringify(bankCount));
-       
-
 
         if (bankCount.users[username].unbanDate >= currentDate) {
           this.blocks = true;
-        bankCount.users[username].blocks = true;
-        localStorage.setItem("bankCount", JSON.stringify(bankCount));
-        console.log("Вы превысили лимит вывода!"); 
-        alert("Вы превысили лимит вывода!"); 
-        balanceBanBlock.innerHTML = "У вас временная блокировка!"; 
+          bankCount.users[username].blocks = true;
+          localStorage.setItem("bankCount", JSON.stringify(bankCount));
+          console.log("Вы превысили лимит вывода!");
+          alert("Вы превысили лимит вывода!");
+          balanceBanBlock.innerHTML = "У вас временная блокировка!";
         } else {
-          let currentDate = new Date()
+          let currentDate = new Date();
           this.blocks = false;
           bankCount.users[username].blocks = false;
           balanceBanBlock.innerHTML = "";
@@ -63,12 +62,10 @@ let bankCount = {
           this.leavePressed
             ? console.log("")
             : alert("Ваш счет разблокирован !");
-            bankCount.users[username].unbanDate = '';
-            bankCount.blocks = bankCount.users[username].blocks;
+          bankCount.users[username].unbanDate = "";
+          bankCount.blocks = bankCount.users[username].blocks;
           localStorage.setItem("bankCount", JSON.stringify(bankCount));
         }
-
-        
       } else {
         this.money -= money;
         bankCount.users[username].money = this.money;
@@ -129,18 +126,22 @@ const withdrawCountBlock = document.querySelector(".withdrawsCount"),
   withdrawMoneyBlock = document.querySelector(".withdrawMoney"),
   limitChangerBlock = document.querySelector(".limitChanger"),
   leaveBtn = document.querySelector(".leave"),
-  adminCheckbox = document.getElementById("myCheckbox");
+  adminCheckbox = document.getElementById("myCheckbox"),
+  container = document.querySelector('.container')
 let loginInfoText = document.createElement("div");
 
 let bankInterface = [
-  balanceBlock,
-  balanceBanBlock,
   loginInfoText,
+  balanceBlock,
   withdrawCountBlock,
   fillBalanceBlock,
   withdrawMoneyBlock,
+  balanceBanBlock,
   limitChangerBlock,
+  leaveBtn,
 ];
+
+let firstScreen = [registerForm, loginForm];
 
 //Enter Input system
 function enterInput(input, method) {
@@ -181,7 +182,7 @@ function enterLoginInput(loginInput, registerInput, method) {
 
 function block() {
   let username = loginInputLogin.value;
-  balanceBanBlock.innerHTML = "У вас временная блокировка!"; 
+  balanceBanBlock.innerHTML = "У вас временная блокировка!";
   bankCount.blocks = true;
   bankCount.users[username].blocks = true;
   localStorage.setItem("bankCount", JSON.stringify(bankCount));
@@ -190,13 +191,16 @@ function loginAdd() {
   enterLoginInput(loginInputLogin, loginInputPass, function () {
     let username = loginInputLogin.value;
     let currentDate = new Date();
-    if (bankCount.users[username].unbanDate && bankCount.users[username].unbanDate >= currentDate){
+    if (
+      bankCount.users[username].unbanDate &&
+      bankCount.users[username].unbanDate >= currentDate
+    ) {
       block();
     } else {
       bankCount.blocks = false;
       bankCount.users[username].blocks = false;
       localStorage.setItem("bankCount", JSON.stringify(bankCount));
-      balanceBanBlock.innerHTML = ""; 
+      balanceBanBlock.innerHTML = "";
       bankCount.users[username].unbanDate = undefined;
       bankCount.unbanDate = undefined;
     }
@@ -204,21 +208,24 @@ function loginAdd() {
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
     bankCount.money = bankCount.users[username].money;
     loginForm.classList.remove("login-form");
-    loginForm.classList.add("hide");
     bankCount.leavePressed = false;
-    registerForm.classList.add("hide");
+    firstScreen.forEach((item) => {
+      item.remove();
+    });
     loginInfoText.classList.add("loginInfoText", "hide");
     loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInputLogin.value}</div>`;
     document.body.insertBefore(loginInfoText, document.body.firstChild);
     if (bankCount.users[username].isAdmin == true) {
       bankInterface.forEach((item) => {
         if (item != limitChangerBlock) {
-          item.classList.remove("hide");
+          //item.classList.remove("hide");
+          container.appendChild(item);
         }
       });
     } else {
       bankInterface.forEach((item) => {
-        item.classList.remove("hide");
+        //item.classList.remove("hide");
+        container.appendChild(item);
       });
     }
     leaveBtn.classList.remove("hide");
@@ -227,17 +234,20 @@ function loginAdd() {
     setInterval(() => {
       let username = loginInputLogin.value;
       let currentDate = new Date();
-      if (bankCount.users[username].unbanDate && bankCount.users[username].unbanDate >= currentDate){
+      if (
+        bankCount.users[username].unbanDate &&
+        bankCount.users[username].unbanDate >= currentDate
+      ) {
         block();
       } else {
         bankCount.blocks = false;
         bankCount.users[username].blocks = false;
         localStorage.setItem("bankCount", JSON.stringify(bankCount));
-        balanceBanBlock.innerHTML = ""; 
+        balanceBanBlock.innerHTML = "";
         bankCount.users[username].unbanDate = undefined;
         bankCount.unbanDate = undefined;
       }
-    }, 5000)
+    }, 5000);
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
   });
 }
@@ -302,17 +312,22 @@ registerButton.addEventListener("click", () => {
 //Leave
 
 leaveBtn.addEventListener("click", () => {
-  bankInterface.forEach((item) => {
-    item.classList.add("hide");
-  });
   leaveBtn.classList.add("hide");
   loginForm.classList.remove("hide");
   loginForm.classList.add("login-form");
   registerForm.classList.remove("hide");
+  firstScreen.forEach((item) => {
+    container.appendChild(item);
+    loginForm.classList.add('login-form');
+    registerForm.classList.add('register-form')
+  });
   registerForm.classList.add("register-form");
   bankCount.leavePressed = true;
   alert("Вы успешно вышли с учетной записи!");
   bankCount.checkWithdraw();
+  bankInterface.forEach((item) => {
+    item.remove();
+  });
   bankCount.checkBalance();
   localStorage.setItem("bankCount", JSON.stringify(bankCount));
 });
@@ -379,3 +394,7 @@ limitInput.addEventListener("keydown", function (e) {
 });
 bankCount.checkWithdraw();
 bankCount.checkBalance();
+bankInterface.forEach((item) => {
+
+  item.remove();
+});
