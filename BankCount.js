@@ -171,7 +171,7 @@ registerButton.addEventListener("click", () => {
     let username = registerInputLogin.value;
     let password = registerInputPass.value;
     console.log(bankCount)
-    if (bankCount[username]) {
+    if (bankCount.users[username]) {
       alert("Пользователь с таким именем уже существует");
       registerInputLogin.value = "";
       registerInputPass.value = "";
@@ -269,4 +269,4 @@ limitInput.addEventListener("keydown", function (e) {
   }
 });
 bankCount.checkWithdraw();
-bankCount.checkBalance();
+bankCount.checkBalance(); 
