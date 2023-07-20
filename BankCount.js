@@ -1,5 +1,6 @@
-let leavePressed = false;
+
 let bankCount = {
+  leavePressed : false,
   users : {},
   fill: function (money) {
     if (this.block === true) {
@@ -34,7 +35,7 @@ let bankCount = {
           function () {
             balanceBanBlock.innerHTML = "";
             console.log("Ваш счет разблокирован!");
-            leavePressed ? console.log (''):alert("Ваш счет разблокирован !");
+            this.leavePressed ? console.log (''):alert("Ваш счет разблокирован !");
             this.block = false;
           }.bind(this),
           5000
@@ -150,7 +151,7 @@ function loginAdd() {
     bankCount.money = bankCount.users[username].money;
     loginForm.classList.remove("login-form");
     loginForm.classList.add("hide");
-    leavePressed = false;
+    bankCount.leavePressed = false;
     registerForm.classList.add("hide");
     loginInfoText.classList.add("loginInfoText", "hide");
     loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInputLogin.value}</div>`;
@@ -239,7 +240,7 @@ leaveBtn.addEventListener("click", () => {
   loginForm.classList.add("login-form");
   registerForm.classList.remove("hide");
   registerForm.classList.add("register-form");
-  leavePressed = true;
+  bankCount.leavePressed = true;
   alert("Вы успешно вышли с учетной записи!");
   localStorage.setItem("bankCount", JSON.stringify(bankCount));
 });
