@@ -23,7 +23,51 @@ body {
   display: block;
 }
 
-
+/* Стили для обычного состояния */
+input[type="checkbox"] {
+  display: none;
+}
+ label {
+  position: relative;
+  display: inline-block;
+  cursor: pointer;
+  color: #abf205;
+  padding-left: 25px;
+  margin-right: 10px;
+}
+ label:before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 20px;
+  height: 20px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+}
+ /* Стили для состояния "checked" */
+input[type="checkbox"]:checked + label:before {
+  background-color: #f9c20d;
+  border-color: #f9c20d;
+  margin-right: 10px;
+}
+ /* Стили для псевдоэлемента "checkmark" */
+label:after {
+  content: "";
+  position: absolute;
+  display: none;
+  left: 7px;
+  top: 3px;
+  width: 5px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+ /* Стили для состояния "checked" псевдоэлемента "checkmark" */
+input[type="checkbox"]:checked + label:after {
+  display: block;
+}
 .login-form {
 
   

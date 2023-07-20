@@ -1,3 +1,4 @@
+let leavePressed = false;
 let bankCount = {
   users : {},
   fill: function (money) {
@@ -22,18 +23,18 @@ let bankCount = {
       if (money > this.money) {
         console.log("Недостаточно средств!");
         alert("У вас на счету недостаточно средств!");
-      } else if (money > this.limit) {
+      } else if (money > this.limit && bankCount.users[username].isAdmin != true) {
         // проверка на превышение лимита перед выводом
         console.log("Вы превысили лимит вывода!");
         alert("Вы превысили лимит вывода!");
         balanceBanBlock.innerHTML = "У вас временная блокировка!";
         this.block = true;
 
-        setTimeout(
+        let banAcc =setTimeout(
           function () {
             balanceBanBlock.innerHTML = "";
             console.log("Ваш счет разблокирован!");
-            alert("Ваш счет разблокирован !");
+            leavePressed ? console.log (''):alert("Ваш счет разблокирован !");
             this.block = false;
           }.bind(this),
           5000
@@ -97,12 +98,13 @@ const withdrawCountBlock = document.querySelector(".withdrawsCount"),
   fillBalanceBlock = document.querySelector(".fillBalance"),
   withdrawMoneyBlock = document.querySelector(".withdrawMoney"),
   limitChangerBlock = document.querySelector(".limitChanger"),
-  leaveBtn = document.querySelector(".leave");
-
+  leaveBtn = document.querySelector(".leave"),
+  adminCheckbox = document.getElementById('myCheckbox');
 let loginInfoText = document.createElement("div");
 
 let bankInterface = [
   balanceBlock,
+  balanceBanBlock,
   loginInfoText,
   withdrawCountBlock,
   fillBalanceBlock,
@@ -131,6 +133,7 @@ function enterLoginInput(loginInput, registerInput, method) {
       bankCount.blocks = bankCount.users[username].blocks;
       bankCount.withdraws = bankCount.users[username].withdraws;
       bankCount.limit = bankCount.users[username].limit;
+      bankCount.isAdmin = bankCount.users[username].isAdmin;
       localStorage.setItem("bankCount", JSON.stringify(bankCount));
       method();
     } else {
@@ -145,6 +148,7 @@ function loginAdd() {
   enterLoginInput(loginInputLogin, loginInputPass, function () {
     loginForm.classList.remove("login-form");
     loginForm.classList.add("hide");
+    leavePressed = false;
     registerForm.classList.add("hide");
     loginInfoText.classList.add("loginInfoText", "hide");
     loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInputLogin.value}</div>`;
@@ -155,6 +159,8 @@ function loginAdd() {
     leaveBtn.classList.remove("hide");
     let username = loginInputLogin.value;
     bankCount.money = bankCount.users[username].money;
+    bankCount.checkWithdraw();
+bankCount.checkBalance(); 
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
   });
 }
@@ -176,22 +182,43 @@ registerButton.addEventListener("click", () => {
       registerInputLogin.value = "";
       registerInputPass.value = "";
     } else {
-      bankCount.users[username] = {
-        password: password,
-        money: 0,
-        withdraws: [],
-        blocks: false,
-        limit: 100000,
-      };
-      console.log(bankCount)  
-      localStorage.setItem("bankCount", JSON.stringify(bankCount));
-      alert("Регистрация выполнена успешно!");
-
-      registerInputLogin.value = "";
-      registerInputPass.value = "";
+      if (adminCheckbox.checked) {
+        bankCount.users[username] = {
+          password: password,
+          money: 0,
+          withdraws: [],
+          blocks: false,
+          limit: 100000,
+          isAdmin: true
+        };
+        console.log(bankCount)  
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        alert("Регистрация выполнена успешно!");
+  
+        registerInputLogin.value = "";
+        registerInputPass.value = "";
+      } else {
+        bankCount.users[username] = {
+          password: password,
+          money: 0,
+          withdraws: [],
+          blocks: false,
+          limit: 100000,
+          isAdmin: false,
+        };
+        console.log(bankCount)  
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        alert("Регистрация выполнена успешно!");
+  
+        registerInputLogin.value = "";
+        registerInputPass.value = "";
+      }
     }
   }
 });
+
+
+
 
 //Leave
 
@@ -204,6 +231,7 @@ leaveBtn.addEventListener("click", () => {
   loginForm.classList.add("login-form");
   registerForm.classList.remove("hide");
   registerForm.classList.add("register-form");
+  leavePressed = true;
   alert("Вы успешно вышли с учетной записи!");
   localStorage.setItem("bankCount", JSON.stringify(bankCount));
 });
