@@ -146,6 +146,8 @@ function enterLoginInput(loginInput, registerInput, method) {
 
 function loginAdd() {
   enterLoginInput(loginInputLogin, loginInputPass, function () {
+    let username = loginInputLogin.value;
+    bankCount.money = bankCount.users[username].money;
     loginForm.classList.remove("login-form");
     loginForm.classList.add("hide");
     leavePressed = false;
@@ -153,12 +155,18 @@ function loginAdd() {
     loginInfoText.classList.add("loginInfoText", "hide");
     loginInfoText.innerHTML = `<div class="container">Ваш логин : ${loginInputLogin.value}</div>`;
     document.body.insertBefore(loginInfoText, document.body.firstChild);
-    bankInterface.forEach((item) => {
-      item.classList.remove("hide");
-    });
+    if (bankCount.users[username].isAdmin == true) {
+      bankInterface.forEach((item) => {
+        if (item != limitChangerBlock){
+          item.classList.remove("hide");
+        }
+      });
+    } else {
+      bankInterface.forEach((item) => {
+        item.classList.remove("hide");
+      });
+    }
     leaveBtn.classList.remove("hide");
-    let username = loginInputLogin.value;
-    bankCount.money = bankCount.users[username].money;
     bankCount.checkWithdraw();
 bankCount.checkBalance(); 
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
