@@ -50,7 +50,7 @@ let bankCount = {
     if (this.money > 0) {
       balanceBlock.innerHTML = `Ваш баланс: ${this.money}`;
     } else {
-      balanceBlock.innerHTML = "На счет отсутствуют средства !";
+      balanceBlock.innerHTML = "На счете отсутствуют средства !";
     }
   },
   checkWithdraw: function () {
@@ -213,6 +213,8 @@ leaveBtn.addEventListener("click", () => {
 fillButton.addEventListener("click", function () {
   enterInput(fillInput, function () {
     bankCount.fill(parseInt(fillInput.value));
+    bankCount.checkWithdraw();
+  bankCount.checkBalance();
   });
 });
 
@@ -221,6 +223,8 @@ fillInput.addEventListener("keydown", function (e) {
     //Enter
     enterInput(fillInput, function () {
       bankCount.fill(parseInt(fillInput.value));
+      bankCount.checkWithdraw();
+  bankCount.checkBalance();
     });
   }
 });
@@ -230,6 +234,8 @@ fillInput.addEventListener("keydown", function (e) {
 withdrawButton.addEventListener("click", function () {
   enterInput(withdrawInput, function () {
     bankCount.withdraw(parseInt(withdrawInput.value));
+    bankCount.checkWithdraw();
+  bankCount.checkBalance();
   });
 });
 
@@ -237,6 +243,8 @@ withdrawInput.addEventListener("keydown", function (e) {
   if (e.keyCode === 13) {
     //Enter
     enterInput(withdrawInput, function () {});
+    bankCount.checkWithdraw();
+  bankCount.checkBalance();
   }
 });
 
@@ -245,6 +253,8 @@ withdrawInput.addEventListener("keydown", function (e) {
 limitButton.addEventListener("click", function () {
   enterInput(limitInput, function () {
     bankCount.limit = limitInput.value;
+    bankCount.checkWithdraw();
+  bankCount.checkBalance();
   });
 });
 
@@ -253,14 +263,10 @@ limitInput.addEventListener("keydown", function (e) {
     //Enter
     enterInput(limitInput, function () {
       bankCount.limit = limitInput.value;
+      bankCount.checkWithdraw();
+  bankCount.checkBalance();
     });
   }
 });
-
-setInterval(function () {
-  bankCount.checkWithdraw();
-}, 40);
-
-setInterval(function () {
-  bankCount.checkBalance();
-}, 40);
+bankCount.checkWithdraw();
+bankCount.checkBalance();
