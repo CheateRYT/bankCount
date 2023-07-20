@@ -223,6 +223,10 @@ registerButton.addEventListener("click", () => {
         registerInputPass.value = "";
       }
     }
+  } else {
+    registerInputLogin.value = "";
+    registerInputPass.value = "";
+    adminCheckbox.checked= false;
   }
 });
 
