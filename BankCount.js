@@ -52,6 +52,26 @@ let bankCount = {
           localStorage.setItem("bankCount", JSON.stringify(bankCount));
           console.log("Вы превысили лимит вывода!");
           alert("Вы превысили лимит вывода!");
+          const checkUnBanByWithdraw = setInterval(() => {
+            let username = loginInputLogin.value;
+            let currentDate = new Date();
+            if (
+              bankCount.users[username].unbanDate &&
+              bankCount.users[username].unbanDate >= currentDate
+            ) {
+              block();
+            } else {
+              bankCount.blocks = false;
+              bankCount.users[username].blocks = false;
+      
+              balanceBanBlock.innerHTML = "";
+              bankCount.users[username].unbanDate = undefined;
+              bankCount.unbanDate = undefined;
+              localStorage.setItem("bankCount", JSON.stringify(bankCount));
+              clearInterval(checkUnBanByWithdraw)
+              console.log("Вы были разблокированы!!!")
+            }
+          }, 5000);
           balanceBanBlock.innerHTML = "У вас временная блокировка!";
         } else {
           let currentDate = new Date();
@@ -231,7 +251,7 @@ function loginAdd() {
     leaveBtn.classList.remove("hide");
     bankCount.checkWithdraw();
     bankCount.checkBalance();
-    setInterval(() => {
+    const checkUnBan = setInterval(() => {
       let username = loginInputLogin.value;
       let currentDate = new Date();
       if (
@@ -242,10 +262,13 @@ function loginAdd() {
       } else {
         bankCount.blocks = false;
         bankCount.users[username].blocks = false;
-        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        
         balanceBanBlock.innerHTML = "";
         bankCount.users[username].unbanDate = undefined;
         bankCount.unbanDate = undefined;
+        localStorage.setItem("bankCount", JSON.stringify(bankCount));
+        clearInterval(checkUnBan)
+        console.log("Вы были разблокированы!!!")
       }
     }, 5000);
     localStorage.setItem("bankCount", JSON.stringify(bankCount));
