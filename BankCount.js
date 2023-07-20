@@ -38,7 +38,7 @@ let bankCount = {
           console.log('Текущая дата равна дате разблокировки') 
           this.block = false;
           bankCount.users[username].blocks = false;
-          ocalStorage.setItem("bankCount", JSON.stringify(bankCount));
+          localStorage.setItem("bankCount", JSON.stringify(bankCount));
         } 
         this.unbanDate =  bankCount.users[username].unbanDate; 
         this.blocks = true;
